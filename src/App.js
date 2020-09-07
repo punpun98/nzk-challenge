@@ -1,25 +1,36 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Game from './Components/Game'
+import { useQuery } from '@apollo/react-hooks';
+import gql from "graphql-tag";
+const GET_INFO =  gql`
+  query topAnimals($skip: Int, $limit: Int)  {
+    topAnimals(skip: $skip, limit: $limit){
+      name,
+      artwork{url}
+    }
+  }
+`;
 
 function App() {
+  const { data, loading, error } = useQuery(GET_INFO, {
+    skip: 0,
+    limit: 5
+  });
+  console.log(data)
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error</p>;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      <div>
+        <div className="header">
+        </div>
+        <div className="gameContainer"  style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
+          <Game topAnimals = {data.topAnimals} />
+        </div>
+      </div>
+    </React.Fragment>
   );
 }
 
