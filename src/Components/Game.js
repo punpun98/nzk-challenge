@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import wallImg from '../Assets/wall.png'
 import pathImg from '../Assets/path.jpeg'
 import playerImg from '../Assets/player.png'
+import mirrorPlayerImg from '../Assets/mirrorPlayer.png'
 import chestImg from '../Assets/chest.png'
-
-import { func } from 'prop-types';
 
 class Game extends Component {
     playerWidth = 50
@@ -41,6 +40,7 @@ class Game extends Component {
     playerObj = new Image()
     chestObj = new Image()
     friends = this.props.topAnimals
+    playerDirection = 1
     keysPressed = {
         65: false,
         87: false,
@@ -84,12 +84,14 @@ class Game extends Component {
               }
               switch(key) {
                   case '65': // Left
+                      this.playerObj.src = mirrorPlayerImg
                       this.playerMoveX(-3);
                       break;
                   case '87': // Up
                       this.playerMoveY(-3);
                       break;
                   case '68': // Right
+                      this.playerObj.src = playerImg
                       this.playerMoveX(3);
                       break;
                   case '83': // Down
@@ -389,7 +391,6 @@ class Game extends Component {
 
     startMenu(){
       var ctx = this.refs.canvas.getContext("2d");
-      this.wallObj.src = wallImg
       ctx.clearRect(0, 0, this.state.windowWidth, this.state.windowHeight);
       ctx.drawImage(this.wallObj, 0, 0, this.state.windowWidth, this.state.windowHeight );
       ctx.font = `90px "${this.fontName}"`;
@@ -423,7 +424,8 @@ class Game extends Component {
     componentDidMount(){
       document.addEventListener("keydown", this.onKeyDown, false);
       document.addEventListener("keyup", this.onKeyUp.bind(this), false);
-      this.startMenu();
+      this.wallObj.src = wallImg
+      this.wallObj.onload = this.startMenu();
     }
   
     componentWillUnmount(){
